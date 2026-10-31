@@ -1,0 +1,36 @@
+{
+  "name": "mastery-league",
+  "version": "1.0.0",
+  "description": "Mastery League: AI-Adaptive Classroom Gaming & Measurable Mastery Platform",
+  "type": "module",
+  "main": "dist/infrastructure/server.js",
+  "scripts": {
+    "build": "tsc && cp -R src/infrastructure/public dist/infrastructure/public",
+    "start": "node dist/infrastructure/server.js",
+    "dev": "tsx watch src/infrastructure/server.ts",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src/**/*.ts"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "ws": "^8.18.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.13.10",
+    "@types/supertest": "^6.0.3",
+    "@types/ws": "^8.18.0",
+    "@vitest/coverage-v8": "^3.0.8",
+    "eslint": "^9.22.0",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.1",
+    "vitest": "^3.0.8"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

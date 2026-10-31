@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mastery League | Social Gaming for Classroom Mastery</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">ML</span>
+        <div>
+          <strong class="brand-name">Mastery League</strong>
+          <span class="brand-tag">Classroom Adaptive Gaming &amp; Measurable Mastery</span>
+        </div>
+      </div>
+      <nav class="topnav" aria-label="Quick actions">
+        <button type="button" class="btn btn-ghost" id="openHowBtn">How Handicap Works</button>
+        <button type="button" class="btn btn-secondary" id="openJoinPinBtn">Join Class PIN</button>
+        <a class="btn btn-ghost" href="/api/docs" target="_blank" rel="noopener">OpenAPI Docs</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="setupScreen" class="hero-grid">
+      <div class="hero-copy card">
+        <p class="eyebrow">Grades 5 to 10 Classroom Prototype • Zero Login Needed</p>
+        <h1>Every student competes together at their own mastery edge.</h1>
+        <p class="lead">
+          Live classroom quiz apps give every child the exact same static question, so the same three students win while struggling classmates guess at random. Solo adaptive tools adjust difficulty, yet isolate kids on silent screens.
+        </p>
+        <div class="pillar-grid">
+          <div class="pillar-item">
+            <strong>1. Ontology Handicap Play</strong>
+            <p>A struggling student fixing a fraction misconception survives right alongside an advanced peer solving inequalities.</p>
+          </div>
+          <div class="pillar-item">
+            <strong>2. Speed Sprints + Survival</strong>
+            <p>Combines timed conceptual sprints with Last-Student-Standing shield rounds. Button-mashing guesses score zero.</p>
+          </div>
+          <div class="pillar-item">
+            <strong>3. Teacher Misconception Map</strong>
+            <p>Bayesian Knowledge Tracing separates lucky speed clicks from verified mastery and flags exact student misconceptions.</p>
+          </div>
+          <div class="pillar-item">
+            <strong>4. Child-Safe by Default</strong>
+            <p>ConvoGuard AI blocks student email/phone PII and unsafe handles before anyone enters a classroom lobby.</p>
+          </div>
+        </div>
+      </div>
+
+      <form id="launchForm" class="launch-card card">
+        <h2>Try a 60-Second Classroom Match</h2>
+        <p class="muted">Pre-filled for instant 1-click evaluation with 5 mixed-ability classmates, or open two tabs to test live WebSocket multiplayer.</p>
+
+        <label class="field">
+          <span>Your Student Handle (Checked by ConvoGuard AI)</span>
+          <input type="text" id="studentHandle" value="Alex (You)" maxlength="36" required />
+        </label>
+
+        <label class="field">
+          <span>Your Starting Classroom Profile</span>
+          <select id="skillPreset">
+            <option value="developing" selected>On Grade Level (Starts at Tier 2)</option>
+            <option value="struggling">Needs Support (Starts at Tier 1 Foundation)</option>
+            <option value="advanced">Advanced Stretch (Starts at Tier 3-4)</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>School Subject Ontology</span>
+          <select id="curriculumSelect">
+            <option value="middle-school-math" selected>Middle School Math: Fractions to Inequalities (Grades 6-8)</option>
+            <option value="middle-school-science">Middle School Science: Forces, Energy &amp; Ecosystems (Grades 6-8)</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Classroom Game Mode</span>
+          <select id="gameModeSelect">
+            <option value="hybrid_arena" selected>Hybrid Classroom Arena (2 Speed Sprints + 2 Survival Rounds)</option>
+            <option value="last_student_standing">Last-Student-Standing (Shield Survival Only)</option>
+            <option value="speed_sprint">Speed Sprint (Mastery-Weighted Timed Sprints)</option>
+          </select>
+        </label>
+
+        <div id="launchError" class="alert-error" hidden></div>
+
+        <div class="launch-actions">
+          <button type="submit" class="btn btn-primary btn-lg" id="instantPlayBtn">
+            Start Live 60s Classroom Match
+          </button>
+          <button type="button" class="btn btn-secondary" id="hostMultiplayerBtn">
+            Host Human-Only Class PIN (Multi-Tab WS)
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section id="arenaScreen" class="arena-layout" hidden>
+      <div class="session-banner card">
+        <div class="banner-left">
+          <span class="pin-badge" id="pinBadge">PIN ----</span>
+          <div>
+            <strong id="sessionTitleLabel">Classroom Arena</strong>
+            <span class="muted" id="wsStatusLabel">Live WebSocket Connected</span>
+          </div>
+        </div>
+        <div class="banner-right">
+          <span class="phase-pill" id="phaseBadge">Round 1 • Speed Sprint</span>
+          <button type="button" class="btn btn-ghost btn-sm" id="resetDemoBtn">New Match</button>
+        </div>
+      </div>
+
+      <div class="arena-columns">
+        <div class="student-column card" id="studentPanel">
+          <div class="student-hud">
+            <div>
+              <span class="hud-label">Playing As</span>
+              <strong id="hudHandle">Alex</strong>
+            </div>
+            <div>
+              <span class="hud-label">Mastery Edge</span>
+              <strong id="hudMastery">52%</strong>
+            </div>
+            <div>
+              <span class="hud-label">Survival Shields</span>
+              <strong id="hudShields">2 / 2</strong>
+            </div>
+            <div>
+              <span class="hud-label">League Score</span>
+              <strong id="hudScore">0 pts</strong>
+            </div>
+          </div>
+
+          <div class="timer-track" aria-label="Round countdown">
+            <div class="timer-fill" id="timerFill"></div>
+          </div>
+
+          <div id="lobbyWaitingBox" class="state-box" hidden>
+            <h3>Classroom Lobby Ready</h3>
+            <p class="muted">Share the 4-digit Class PIN above with another browser tab, or launch Round 1 right now.</p>
+            <button type="button" class="btn btn-primary btn-lg" id="startFirstRoundBtn">Launch Round 1</button>
+          </div>
+
+          <div id="questionBox" class="question-box" hidden>
+            <div class="calibration-bar">
+              <span class="tier-chip" id="qTierChip">Tier 2 Core</span>
+              <span class="concept-chip" id="qConceptChip">Concept</span>
+              <span class="muted" id="qHandicapNote">Calibrated to your ZPD frontier</span>
+            </div>
+            <h2 class="question-prompt" id="qPromptText">Loading question...</h2>
+            <div class="options-grid" id="optionsGrid" role="group" aria-label="Answer choices"></div>
+          </div>
+
+          <div id="outcomeBox" class="outcome-box" hidden>
+            <div class="outcome-header">
+              <strong id="outcomeHeadline">Correct!</strong>
+              <span class="points-chip" id="outcomePoints">+0 pts</span>
+            </div>
+            <p id="outcomeMasteryLine" class="mastery-jump"></p>
+            <p id="outcomeExplanation" class="muted"></p>
+            <div id="outcomeMisconceptionBox" class="misconception-callout" hidden></div>
+            <div class="outcome-actions">
+              <button type="button" class="btn btn-primary btn-lg" id="nextRoundBtn">Next Classroom Round</button>
+            </div>
+          </div>
+
+          <div id="completedBox" class="completed-box" hidden>
+            <p class="eyebrow">Match Complete • Measurable Mastery Summary</p>
+            <h2 id="finalHeadline">Classroom Match Finished!</h2>
+            <p id="finalSummaryText" class="lead-sm"></p>
+            <div class="final-actions">
+              <button type="button" class="btn btn-primary" id="playAgainBtn">Play Another Subject or Profile</button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="teacher-column">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h3>Live Classroom Standings (Handicap Parity)</h3>
+                <p class="muted">Notice each student competes on their own calibrated tier inside the same round.</p>
+              </div>
+            </div>
+
+            <div tabindex="0" role="region" aria-labelledby="standingsCaption" class="table-wrapper">
+              <table class="standings-table">
+                <caption id="standingsCaption" class="sr-only">Live classroom leaderboard and adaptive mastery tiers</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Student</th>
+                    <th scope="col">Calibrated Tier</th>
+                    <th scope="col">Mastery</th>
+                    <th scope="col">Shields</th>
+                    <th scope="col">Score</th>
+                  </tr>
+                </thead>
+                <tbody id="standingsBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h3>Teacher Mastery &amp; Misconception Radar</h3>
+                <p class="muted">Real-time BKT concept mastery across the room plus diagnosed distractor traps.</p>
+              </div>
+              <div class="radar-kpis">
+                <span class="kpi-pill" id="radarClassAvg">Class Mastery: --%</span>
+                <span class="kpi-pill" id="radarSurvivors">Survivors: --</span>
+              </div>
+            </div>
+
+            <div id="conceptBars" class="concept-bars"></div>
+
+            <div class="misconception-feed-wrap">
+              <h4>Detected Student Misconceptions &amp; Micro-Remediations</h4>
+              <div id="misconceptionFeed" class="misconception-feed">
+                <p class="muted">No misconceptions triggered yet. Wrong answers map directly to targeted fixes here.</p>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="howItWorksDialog" closedby="any" aria-labelledby="howDialogTitle">
+    <form method="dialog" class="dialog-body">
+      <h2 id="howDialogTitle">How Ontology Handicap Matchmaking Works</h2>
+      <p>
+        In a flat classroom game, everyone gets the same question. Advanced students coast; struggling students get knocked out in 20 seconds.
+      </p>
+      <ul class="dialog-list">
+        <li><strong>Prerequisite Concept Graph:</strong> Topics form a directed acyclic graph (e.g. Equivalent Fractions unlocks Unlike Denominators, which unlocks Two-Step Equations, then Inequalities).</li>
+        <li><strong>Bayesian Knowledge Tracing (BKT):</strong> Every response updates posterior mastery probability <code>P(L_n)</code> while filtering sub-1.2s random button mashing.</li>
+        <li><strong>Zone of Proximal Development (ZPD) Handicap:</strong> During Last-Student-Standing, each student receives an item calibrated right above their current mastery edge so everyone has a fair survival shot by conquering their own next concept.</li>
+      </ul>
+      <div class="dialog-footer">
+        <button type="submit" class="btn btn-primary">Got It</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="joinPinDialog" closedby="any" aria-labelledby="joinPinTitle">
+    <div class="dialog-body">
+      <h2 id="joinPinTitle">Join Live Classroom via 4-Digit PIN</h2>
+      <p class="muted">Open two browser tabs, host a room in Tab 1, and enter its 4-digit PIN here to compete synchronously over WebSockets.</p>
+      <label class="field">
+        <span>4-Digit Class PIN</span>
+        <input type="text" id="joinPinInput" placeholder="4811" maxlength="4" pattern="\d{4}" />
+      </label>
+      <label class="field">
+        <span>Your Student Handle</span>
+        <input type="text" id="joinHandleInput" value="Sam_7A" maxlength="36" />
+      </label>
+      <label class="field">
+        <span>Starting Profile</span>
+        <select id="joinPresetInput">
+          <option value="struggling">Needs Support (Tier 1)</option>
+          <option value="developing" selected>On Grade Level (Tier 2)</option>
+          <option value="advanced">Advanced (Tier 3-4)</option>
+        </select>
+      </label>
+      <div id="joinPinError" class="alert-error" hidden></div>
+      <div class="dialog-footer">
+        <button type="button" class="btn btn-ghost" id="cancelJoinPinBtn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmJoinPinBtn">Join Classroom</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
