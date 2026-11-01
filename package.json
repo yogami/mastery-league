@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/infrastructure/server.js",
   "scripts": {
-    "build": "tsc && cp -R src/infrastructure/public dist/infrastructure/public",
+    "build": "rm -rf dist && tsc && cp -R src/infrastructure/public dist/infrastructure/public",
     "start": "node dist/infrastructure/server.js",
     "dev": "tsx watch src/infrastructure/server.ts",
     "test": "vitest run",
